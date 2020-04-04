@@ -14,15 +14,20 @@ const sendMsgToAll = (connections, msg) => {
     });
 };
 
+
+
 const connOrdisc = () => {
-    const onlineUsers = Object.keys(activeConnections).map(connId => {
-        return {username: activeConnections[connId].user.username, id: activeConnections[connId].user.id};
+     const onlineUsers = Object.keys(activeConnections).map(connId => {
+        return {key: nanoid(), username: activeConnections[connId].user.username, id: activeConnections[connId].user.id};
     });
     sendMsgToAll(activeConnections, {
         type: 'ONLINE_USERS',
         user: onlineUsers
     });
 };
+
+
+
 
 const allMessages = async () => {
     const messages = await Message.find().limit(10).populate('userId').sort('-datetime');
@@ -42,13 +47,10 @@ const  closeConnection = (ws, id) =>{
 router.ws('/', async (ws, req) => {
     const id = nanoid();
     const user = await User.findOne({token: req.query.token});
+
     activeConnections[id] = {ws, user};
-
-    connOrdisc();
+    await connOrdisc();
     await allMessages();
-
-
-
 
     ws.on('message', async (msg) => {
         let decodedMessage;

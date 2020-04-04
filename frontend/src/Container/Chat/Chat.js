@@ -8,6 +8,7 @@ class Chat extends Component {
         onlineUser: [],
         message: '',
         messages: [],
+        loginError: null
     };
 
     componentDidMount() {
@@ -58,7 +59,7 @@ class Chat extends Component {
             <div style={blockChat}>
                 <div style={onlineStyle}>
                     {this.state.onlineUser.map(user =>
-                        <p key={user.id}>{user.username}</p>
+                        <p key={user.key}>{user.username}</p>
                     )}
                 </div>
                 <div style={blockMessage}>

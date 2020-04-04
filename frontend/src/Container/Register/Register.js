@@ -21,6 +21,10 @@ class Register extends Component {
         this.props.registerUser({...this.state})
     };
 
+    errorHandler = (fieldName) =>{
+        return this.props.error && this.props.error[fieldName]
+    };
+
     render() {
         return (
             <div style={formAuth}>
@@ -32,6 +36,7 @@ class Register extends Component {
                         name="fullName"
                         placeholder="Введите имя"
                         onChange={this.inputChangeHandler}
+                        error={this.errorHandler('fullName')}
                     />
                     <FormElement
                         type="text"
@@ -40,6 +45,7 @@ class Register extends Component {
                         name="username"
                         placeholder="Введите логин"
                         onChange={this.inputChangeHandler}
+                        error={this.errorHandler('username')}
                     />
                     <FormElement
                         type="password"
@@ -48,6 +54,7 @@ class Register extends Component {
                         propertyName="password"
                         placeholder="Введите пароль"
                         onChange={this.inputChangeHandler}
+                        error={this.errorHandler('password')}
                     />
                    <FormGroup>
                        <Button color="success">Register</Button>
@@ -57,8 +64,12 @@ class Register extends Component {
         );
     }
 }
+
+const mapStateToProps = state => ({
+   error: state.users.registerError
+});
 const mapDispatchToProps = dispatch => ({
     registerUser : (user)=> dispatch(registerUser(user))
 });
 
-export default connect(null, mapDispatchToProps)(Register);
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

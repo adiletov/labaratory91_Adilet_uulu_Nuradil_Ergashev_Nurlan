@@ -6,7 +6,15 @@ const User = require('../models/User');
 
 router.post('/', async (req,res)=>{
    const newUser = req.body;
-   const user = new User(newUser);
+   const username = await User.findOne({username: req.body.username});
+   if (username){
+       res.status(401).send({username: 'Такой пользователь существует!!!'})
+   }else if (!req.body.fullName){
+       res.status(401).send({fullName: 'Заполните поле!'})
+   }else if (!req.body.password){
+       res.status(401).send({password: 'Придумайте пароль!'})
+   }
+   const user =  new User(newUser);
 
    try{
        await user.generationToken();
